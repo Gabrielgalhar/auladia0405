@@ -1,5 +1,6 @@
 package com.aula.security.models;
 
+import com.aula.security.enums.TipoUser;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -17,16 +18,24 @@ public class User implements UserDetails {
     private String login;
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private TipoUser tipoUser;
+
     public User() {}
 
-    public User(String login, String password) {
+    public User(String login, String password, TipoUser tipoUser) {
         this.login = login;
         this.password = password;
+        this.tipoUser = tipoUser;
+    }
+
+    public TipoUser getTipoUser() {
+        return tipoUser;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null; // depois pode adicionar roles
+        return null;
     }
 
     @Override
