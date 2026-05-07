@@ -1,46 +1,33 @@
 package com.aula.security.models;
 
-import com.aula.security.enums.TipoUser;
+import com.spring.security.enums.UserRole;
 import jakarta.persistence.*;
+import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table(name = "users")
+@Table(name = "USERS")
+@Data
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String login;
     private String password;
+    private UserRole role;
 
-    @Enumerated(EnumType.STRING)
-    private TipoUser tipoUser;
-
-    public User() {}
-
-    public User(String login, String password, TipoUser tipoUser) {
-        this.login = login;
-        this.password = password;
-        this.tipoUser = tipoUser;
-    }
-
-    public TipoUser getTipoUser() {
-        return tipoUser;
-    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
+        if(this.role == UserRole.ADMIN) return
+                List.of(new SimpleGrantedAuthority("ADMIN"), new SimpleGrantedAuthority("USER"));
+        else return  List.of(new SimpleGrantedAuthority("USER"));
     }
 
     @Override
@@ -50,21 +37,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return UserDetails.super.isAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return UserDetails.super.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return UserDetails.super.isCredentialsNonExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return UserDetails.super.isEnabled();
     }
 }

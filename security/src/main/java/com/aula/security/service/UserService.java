@@ -1,26 +1,23 @@
 package com.aula.security.service;
 
+import com.aula.security.models.User;
 import com.aula.security.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
-public class UserService implements UserDetailsService {
+public class UserService {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = userRepository.findByLogin(username);
+    public List<User> findAll(){
+        return userRepository.findAll();
+    }
 
-        if (user == null) {
-            throw new UsernameNotFoundException("Usuário não encontrado");
-        }
-
-        return user;
+    public User criarUser(User user){
+        return userRepository.save(user);
     }
 }

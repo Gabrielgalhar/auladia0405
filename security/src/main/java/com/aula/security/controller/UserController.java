@@ -1,65 +1,27 @@
 package com.aula.security.controller;
 
-import com.aula.security.enums.TipoUser;
 import com.aula.security.models.User;
-import com.aula.security.repository.UserRepository;
+import com.aula.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/public")
+@RequestMapping(path = "/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @PostMapping("/register")
-    public String register(
-            @RequestParam String login,
-            @RequestParam String password
-    ) {
-
-        if (userRepository.findByLogin(login) != null) {
-            return "Usuário já existe";
-        }
-
-        String senhaCriptografada = passwordEncoder.encode(password);
-
-        User user = new User(
-                login,
-                senhaCriptografada,
-                TipoUser.User
-        );
-
-        userRepository.save(user);
-
-        return "Usuário cadastrado com sucesso";
+    @GetMapping
+    public List<User> findAll(){
+        return userService.findAll();
     }
 
-    @GetMapping("/users")
-    public List<User> listarUsuarios() {
-        return userRepository.findAll();
+    @PostMapping
+    public User criarUser(@RequestBody User user){
+        return userService.criarUser(user);
     }
 
-    @GetMapping("/user/{login}")
-    public User buscarPorLogin(@PathVariable String login) {
-        return userRepository.findByLogin(login);
-    }
-
-    @GetMapping("/teste")
-    public String testePublico() {
-        return "Endpoint público funcionando";
-    }
-
-
-    @GetMapping("/private")
-    public String testePrivado() {
-        return "Endpoint privado funcionando";
-    }
 }
